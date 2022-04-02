@@ -7,19 +7,15 @@ public class StatsManager : MonoBehaviour
 {
 
     [SerializeField] private string entityName;
-    [SerializeField] private int entityMaxHealth = 10;
-    [SerializeField] private int entityCurrHealth = 10;
-    [SerializeField] private int entityMaxResource = 10;
-    [SerializeField] private int entityCurrResource = 10;
-    [SerializeField] private int entityDamageAmount = 1;
-    [SerializeField] private int entityDamageMultModifier = 1;
+    [SerializeField] private int maxHealth = 10;
+    [SerializeField] private int currHealth = 10;
+    [SerializeField] private int maxResource = 20;
+    [SerializeField] private int currResource = 0;
+    [SerializeField] private int resourceGrowth = 10;
+    [SerializeField] private int DamageAmount = 1;
+    [SerializeField] private int DamageMultModifier = 1;
 
     private ActionsManager actionsManager;
-
-    public string getEntityName()
-    {
-        return entityName;
-    }
 
     // Start is called before the first frame update
     void Start()
@@ -30,12 +26,42 @@ public class StatsManager : MonoBehaviour
         actionsManager.ModifyHealthEvent += onModifyHealth;
     }
 
+    public string GetEntityName()
+    {
+        return entityName;
+    }
+
+    public int GetHealth()
+    {
+        return currHealth;
+    }
+
+    public int GetMaxHealth()
+    {
+        return maxHealth;
+    }
+
+    public int GetResource()
+    {
+        return currResource;
+    }
+
+    public int GetMaxResource()
+    {
+        return maxResource;
+    }
+
+    public int GetResourceGrowth()
+    {
+        return resourceGrowth;
+    }
+
     void onModifyHealth(object sender, InfoEventArgs<string, int> e)
     {
         if(e.info1.Equals(entityName)) // I am the target
         {
             Console.WriteLine(entityName+"\'s health is being modified!");
-            modifyEntityHealth(e.info2);
+            modifyHealth(e.info2);
         }
     }
 
@@ -43,15 +69,15 @@ public class StatsManager : MonoBehaviour
     {
         if(e.info1.Equals(entityName)) // I am the target
         {
-            modifyEntityMaxHealth(e.info2);
+            modifyMaxHealth(e.info2);
         }
     }
 
     void onModifyMaxResource(object sender, InfoEventArgs<string, int> e)
     {
         if(e.info1.Equals(entityName)) // I am the target
-        {
-            modifyEntityMaxResource(e.info2);
+        {   
+            modifyMaxResource(e.info2);
         }
     }
 
@@ -59,7 +85,15 @@ public class StatsManager : MonoBehaviour
     {
         if(e.info1.Equals(entityName)) // I am the target
         {
-            modifyEntityCurrResource(e.info2);
+            modifyCurrResource(e.info2);
+        }
+    }
+
+    void onModifyResourceGrowth(object sender, InfoEventArgs<string, int> e)
+    {
+        if(e.info1.Equals(entityName)) // I am the target
+        {
+            modifyResourceGrowth(e.info2);
         }
     }
 
@@ -67,7 +101,7 @@ public class StatsManager : MonoBehaviour
     {
         if(e.info1.Equals(entityName)) // I am the target
         {
-            modifyEntityDamageAmount(e.info2);
+            modifyDamageAmount(e.info2);
         }
     }
 
@@ -75,38 +109,43 @@ public class StatsManager : MonoBehaviour
     {
         if(e.info1.Equals(entityName)) // I am the target
         {
-            modifyEntityDamageMultModifier(e.info2);
+            modifyDamageMultModifier(e.info2);
         }
     }
 
-    private void modifyEntityMaxResource(int modifyAmount)
+    private void modifyMaxResource(int modifyAmount)
     {
-        entityMaxResource += modifyAmount;
+        maxResource += modifyAmount;
     }
 
-    private void modifyEntityCurrResource(int modifyAmount)
+    private void modifyCurrResource(int modifyAmount)
     {
-        entityCurrResource += modifyAmount;
+        currResource += modifyAmount;
     }
 
-    private void modifyEntityDamageAmount(int modifyAmount)
+    private void modifyResourceGrowth(int modifyAmount)
     {
-        entityDamageAmount += modifyAmount;
+        resourceGrowth += modifyAmount;
     }
 
-    private void modifyEntityDamageMultModifier(int modifyAmount)
+    private void modifyDamageAmount(int modifyAmount)
     {
-        entityDamageMultModifier += modifyAmount;
+        DamageAmount += modifyAmount;
     }
 
-    private void modifyEntityHealth(int modifyAmount)
+    private void modifyDamageMultModifier(int modifyAmount)
     {
-        entityCurrHealth += modifyAmount;
+        DamageMultModifier += modifyAmount;
     }
 
-    private void modifyEntityMaxHealth(int modifyAmount)
+    private void modifyHealth(int modifyAmount)
     {
-        entityMaxHealth += modifyAmount;
+        currHealth += modifyAmount;
+    }
+
+    private void modifyMaxHealth(int modifyAmount)
+    {
+        maxHealth += modifyAmount;
     }
 
 }

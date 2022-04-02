@@ -17,7 +17,9 @@ public class BaseCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     private Vector3 prevRotation; //used for setting the rotation back to original rotation
     private int prevHeirarchy;
+
     private bool isSelected = false;
+    protected bool requiresTarget = false;
 
     // Start is called before the first frame update
     void Start()
@@ -38,6 +40,11 @@ public class BaseCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         }
     }
 
+    public bool isCardSelected()
+    {
+        return isSelected;
+    }
+
     public void Deselect()
     {
         isSelected = false;
@@ -51,18 +58,31 @@ public class BaseCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         this.transform.SetSiblingIndex(playerManager.handManager.getHandSize() + 1);
     }
 
-    public void OnPointerClick(PointerEventData eventData)
+    public virtual void OnPointerClick(PointerEventData eventData)
     {
-        if(!isSelected)
-        { 
-            playerManager.Select(gameObject);
-            isSelected = true;
+
+        if (requiresTarget)
+        {
+            // leave target selection and card casting to PlayerManager
+            if (!isSelected)
+            { 
+                playerManager.SelectCard(gameObject);
+                isSelected = true;
+                Debug.Log("[BaseCard] (OnPointerClick) Selected!");
+            }
+            else
+            {
+                playerManager.DeselectCard(gameObject);
+                isSelected = false;
+                Debug.Log("[BaseCard] (OnPointerClick) Deselected!");
+            }
         }
         else
         {
-            playerManager.Deselect(gameObject);
-            isSelected = false;
+            // Cast right away, no target needed
+            Cast(null);
         }
+
     }
 
     public void OnPointerExit(PointerEventData eventData)
@@ -74,6 +94,8 @@ public class BaseCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public virtual void Cast(GameObject target)
     {
+        // TODO: Add mana cost mechanic
+        Debug.Log("Casting...");
         Deselect();
     }
 

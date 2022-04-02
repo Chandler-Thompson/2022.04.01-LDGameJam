@@ -5,6 +5,11 @@ using UnityEngine;
 public class CardFireball : BaseCard
 {
 
+    void Start()
+    {
+        requiresTarget = true;
+    }
+
     public override void Cast(GameObject target)
     {
 
@@ -18,7 +23,7 @@ public class CardFireball : BaseCard
 
         base.Cast(target);
 
-        string targetName = targetStats.getEntityName();
+        string targetName = targetStats.GetEntityName();
 
         InfoEventArgs<string, int> fireballData = new InfoEventArgs<string, int>(targetName, -3);
         actionsManager.ModifyHealth(playerManager.gameObject, fireballData);

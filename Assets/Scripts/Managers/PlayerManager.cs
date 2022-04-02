@@ -9,71 +9,73 @@ public class PlayerManager : MonoBehaviour
     [HideInInspector] public StatsManager statsManager;
 
     private List<GameObject> selectedCards;
-
-    private Plane raycastPlane;
+    private List<GameObject> selectedEntities;
 
     // Start is called before the first frame update
     void Start()
     {
         handManager = GameObject.FindWithTag("HandManager").GetComponent<HandManager>();
         statsManager = GameObject.FindWithTag("StatsManager").GetComponent<StatsManager>();
+
         selectedCards = new List<GameObject>();
-
-        // Make sure ray starts back enough behind camera in order to intersect entity's collider
-        raycastPlane = new Plane(Vector3.forward, new Vector3(0, 0, -2));
-    }
-
-    void FixedUpdate()
-    {
-
-        // Needed because camera is in perspective, not orthogonal
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        float distance;
-        raycastPlane.Raycast(ray, out distance);
-        Vector3 worldPosition = ray.GetPoint(distance);
-
-        RaycastHit hit;
-        int layerMask = 1 << 3; // layer 3 has targetable entities
-        if (Physics.Raycast(worldPosition, transform.TransformDirection(Vector3.forward), out hit, Mathf.Infinity, layerMask))
-        {
-            Debug.DrawRay(worldPosition, transform.TransformDirection(Vector3.forward) * hit.distance, Color.yellow);
-
-            StatsManager targetStats = hit.transform.Find("StatsManager").gameObject.GetComponent<StatsManager>();
-
-            if (targetStats != null)
-            {
-                GameObject.FindWithTag("NotificationController").GetComponent<NotificationController>().postNotification("Hit "+targetStats.getEntityName()+"!");
-            }
-
-        }
-        else
-        {
-            Debug.DrawRay(worldPosition, transform.TransformDirection(Vector3.forward) * 1000, Color.white);
-            // Debug.Log("Did not Hit");
-        }
+        selectedEntities = new List<GameObject>();
     }
 
     // Update is called once per frame
     void Update()
     {
         
+        if (selectedCards.Count > 0)
+        {
+            if (selectedEntities.Count > 0)
+            {
+                foreach (GameObject card in selectedCards)
+                {
+                    BaseCard castingCard = card.GetComponent<BaseCard>();
+                    castingCard.Cast(selectedEntities[0]);
+                }
+            }
+        }
+
     }
 
-    public void Select(GameObject card)
+    public void SelectCard(GameObject card)
     {
         selectedCards.Add(card);
     }
 
-    public void Deselect(GameObject card)
+    public void SelectEntity(GameObject entity)
+    {
+        selectedEntities.Add(entity);
+    }
+
+    public void DeselectCard(GameObject card)
     {
         selectedCards.Remove(card);
     }
 
-    public bool getIsSelected(GameObject card)
+    public void DeselectEntity(GameObject entity)
+    {
+        selectedEntities.Remove(entity);
+    }
+
+    public bool getIsCardSelected(GameObject card)
     {
         foreach (GameObject selectedCard in selectedCards)
         {
             if(GameObject.ReferenceEquals(card, selectedCard))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public bool getIsEntitySelected(GameObject entity)
+        {
+        foreach (GameObject selectedEntity in selectedEntities)
+        {
+            if(GameObject.ReferenceEquals(entity, selectedEntity))
             {
                 return true;
             }

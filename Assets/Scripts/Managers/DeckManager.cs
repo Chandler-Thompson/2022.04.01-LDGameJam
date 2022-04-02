@@ -6,7 +6,7 @@ using UnityEngine;
 public class DeckManager : MonoBehaviour
 {
     private string deckCode;
-    public string DEFAULT_DECK_CODE = "A1_A1_A1_A1_A1_A1_A1_A1_A1_A1_A1_A1_A1_A1_A1_A1_A1_A1_A1_T1";
+    public string DEFAULT_DECK_CODE = "A1_A1_A1_A1_A1_A1_A1_A1_A1_A1_A1_A1_A1_A1_A1_A1_A1_A1_F1_T1";
 
     //created in Start
     private List<GameObject> deck;
